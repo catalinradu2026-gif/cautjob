@@ -23,21 +23,28 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([])
   const [search, setSearch] = useState('')
   const [selectedSector, setSelectedSector] = useState<string | null>(null)
+  const [selectedCity, setSelectedCity] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [cities, setCities] = useState<string[]>([])
 
   useEffect(() => {
     // Load jobs from JSON
     import('@/data/olx-jobs.json').then((data) => {
       setJobs(data.jobs)
+      // Extract unique cities
+      const uniqueCities = Array.from(new Set(data.jobs.map((j: Job) => j.location.split(',')[0]))).sort()
+      setCities(uniqueCities as string[])
       setLoading(false)
     })
   }, [])
 
   const filtered = jobs.filter((job) => {
+    const jobCity = job.location.split(',')[0].trim()
     const matchesSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
       job.company.toLowerCase().includes(search.toLowerCase())
     const matchesSector = !selectedSector || job.sector === selectedSector
-    return matchesSearch && matchesSector
+    const matchesCity = !selectedCity || jobCity === selectedCity
+    return matchesSearch && matchesSector && matchesCity
   })
 
   return (
@@ -48,22 +55,45 @@ export default function JobsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar Filters */}
-          <div className="bg-white rounded-lg p-4 h-fit">
-            <h3 className="font-semibold mb-4">Filtre</h3>
-            <div className="space-y-2">
-              {SECTORS.map((sector) => (
-                <button
-                  key={sector}
-                  onClick={() => setSelectedSector(selectedSector === sector ? null : sector)}
-                  className={`block w-full text-left px-3 py-2 rounded transition text-sm ${
-                    selectedSector === sector
-                      ? 'bg-brand-600 text-white'
-                      : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
-                  }`}
-                >
-                  {sector}
-                </button>
-              ))}
+          <div className="bg-white rounded-lg p-4 h-fit space-y-6">
+            {/* Sector Filter */}
+            <div>
+              <h3 className="font-semibold mb-3">Sector</h3>
+              <div className="space-y-2">
+                {SECTORS.map((sector) => (
+                  <button
+                    key={sector}
+                    onClick={() => setSelectedSector(selectedSector === sector ? null : sector)}
+                    className={`block w-full text-left px-3 py-2 rounded transition text-sm ${
+                      selectedSector === sector
+                        ? 'bg-brand-600 text-white'
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                    }`}
+                  >
+                    {sector}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* City Filter */}
+            <div>
+              <h3 className="font-semibold mb-3">Oraș</h3>
+              <div className="space-y-2">
+                {cities.map((city) => (
+                  <button
+                    key={city}
+                    onClick={() => setSelectedCity(selectedCity === city ? null : city)}
+                    className={`block w-full text-left px-3 py-2 rounded transition text-sm ${
+                      selectedCity === city
+                        ? 'bg-brand-600 text-white'
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-900'
+                    }`}
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

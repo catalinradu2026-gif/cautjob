@@ -1,0 +1,43 @@
+
+> cautjob@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.2 (Turbopack)
+- Local:         http://localhost:3004
+- Network:       http://192.168.1.149:3004
+- Environments: .env.local
+✓ Ready in 638ms
+
+ GET / 200 in 3.2s (next.js: 3.0s, application-code: 204ms)
+ GET / 200 in 414ms (next.js: 29ms, application-code: 385ms)
+[browser] Image with src "http://localhost:3004/vercel.svg" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+ GET / 200 in 40ms (next.js: 5ms, application-code: 36ms)
+ GET / 200 in 32ms (next.js: 5ms, application-code: 27ms)
+✓ Compiled in 380ms
+ GET / 200 in 481ms (next.js: 242ms, application-code: 239ms)
+ GET / 200 in 277ms (next.js: 92ms, application-code: 185ms)
+ GET / 200 in 141ms (next.js: 10ms, application-code: 131ms)
+ GET / 200 in 142ms (next.js: 34ms, application-code: 108ms)
+ GET / 200 in 84ms (next.js: 5ms, application-code: 79ms)
+ GET / 200 in 58ms (next.js: 7ms, application-code: 51ms)
+ GET / 200 in 340ms (next.js: 25ms, application-code: 315ms)
+ GET /jobs 200 in 691ms (next.js: 628ms, application-code: 62ms)
+ GET /jobs/2 200 in 1244ms (next.js: 1202ms, application-code: 42ms)
+[browser] A param property was accessed directly with `params.id`. `params` is a Promise and must be unwrapped with `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis 
+    at JobDetailPage (app/jobs/[id]/page.tsx:38:27)
+  36 |
+  37 | export default function JobDetailPage({ params }: JobPageProps) {
+> 38 |   const job = JOBS[params.id]
+     |                           ^
+  39 |   const [showApplyForm, setShowApplyForm] = useState(false)
+  40 |   const [formData, setFormData] = useState({
+  41 |     name: '', (app/jobs/[id]/page.tsx:38:27)
+[browser] A param property was accessed directly with `params.id`. `params` is a Promise and must be unwrapped with `React.use()` before accessing its properties. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis 
+    at JobDetailPage (app/jobs/[id]/page.tsx:38:27)
+  36 |
+  37 | export default function JobDetailPage({ params }: JobPageProps) {
+> 38 |   const job = JOBS[params.id]
+     |                           ^
+  39 |   const [showApplyForm, setShowApplyForm] = useState(false)
+  40 |   const [formData, setFormData] = useState({
+  41 |     name: '', (app/jobs/[id]/page.tsx:38:27)

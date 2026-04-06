@@ -1,33 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 
-const JOBS: { [key: string]: any } = {
-  '1': {
-    id: '1',
-    title: 'Specialist IT Help Desk',
-    company: 'TechCorp Craiova',
-    sector: 'IT',
-    salary: '2500-3000 RON',
-    location: 'Craiova, Str. Ștefan cel Mare nr. 45',
-    description: 'Suport tehnic level 1 pentru clienți corporativi. Responsabilități: troubleshooting hardware/software, ticket management, documentație.',
-    requirements: ['Windows', 'Rețele TCP/IP', 'Help Desk', 'English B1'],
-    postedDate: '2026-04-03',
-  },
-  '2': {
-    id: '2',
-    title: 'Contabil Senior',
-    company: 'Audit Plus SRL',
-    sector: 'Contabilitate',
-    salary: '3000-3500 RON',
-    location: 'Craiova, Centru',
-    description: 'Contabilitate generală, declarații fiscale, regularizări. Lucrezi cu clienti cu VOL și cifră de afaceri variabilă.',
-    requirements: ['Contabilitate', 'ANAF', '5+ ani experiență', 'Excel avansat'],
-    postedDate: '2026-04-01',
-  },
+interface Job {
+  id: string
+  title: string
+  company: string
+  sector: string
+  salary: string
+  location: string
+  description: string
+  requirements: string[]
+  phone: string
+  email: string
+  postedDate: string
 }
 
 interface JobPageProps {
@@ -35,7 +24,8 @@ interface JobPageProps {
 }
 
 export default function JobDetailPage({ params }: JobPageProps) {
-  const job = JOBS[params.id]
+  const [job, setJob] = useState<Job | null>(null)
+  const [loading, setLoading] = useState(true)
   const [showApplyForm, setShowApplyForm] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -45,6 +35,25 @@ export default function JobDetailPage({ params }: JobPageProps) {
   })
   const [applying, setApplying] = useState(false)
   const [success, setSuccess] = useState(false)
+
+  useEffect(() => {
+    // Load job from JSON
+    import('@/data/olx-jobs.json').then((data) => {
+      const foundJob = data.jobs.find((j: Job) => j.id === params.id)
+      setJob(foundJob || null)
+      setLoading(false)
+    })
+  }, [params.id])
+
+  if (loading) {
+    return (
+      <main className="min-h-screen pt-24 pb-20 px-4 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center py-20">
+          <p className="text-gray-600">Se încarcă...</p>
+        </div>
+      </main>
+    )
+  }
 
   if (!job) {
     return (
@@ -64,7 +73,6 @@ export default function JobDetailPage({ params }: JobPageProps) {
     setApplying(true)
 
     try {
-      // Send to email API (will configure Resend later)
       const response = await fetch('/api/apply', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -129,6 +137,15 @@ export default function JobDetailPage({ params }: JobPageProps) {
                     {req}
                   </span>
                 ))}
+              </div>
+
+              {/* Contact Info */}
+              <div className="mt-8 pt-6 border-t">
+                <h3 className="text-xl font-bold mb-4">Contact recrutor</h3>
+                <div className="space-y-2">
+                  <p className="text-gray-700">📧 Email: <strong>{job.email}</strong></p>
+                  <p className="text-gray-700">📱 Telefon: <strong>{job.phone}</strong></p>
+                </div>
               </div>
             </div>
           </div>
